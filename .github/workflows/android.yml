@@ -4,14 +4,16 @@ name: Build NOVA OS APK
 on:
   workflow_dispatch:
   push:
-    branches: [main, master]
+    branches:
+      - main
+      - master
 
 jobs:
   build:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout
+      - name: Checkout Repository
         uses: actions/checkout@v4
 
       - name: Setup Java
@@ -26,12 +28,15 @@ jobs:
           gradle-version: '8.9'
 
       - name: Setup Android SDK
-        uses: android-actions/setup-android@v3
+        uses: android-actions/setup-android@v4
+        with:
+          packages: 'platform-tools'
 
-      - name: Install SDK
-        run: sdkmanager "platforms;android-35" "build-tools;35.0.0"
+      - name: Install Android SDK Packages
+        run: |
+          sdkmanager --install "platforms;android-35" "build-tools;35.0.0"
 
-      - name: Extract project
+      - name: Extract NOVA OS Project
         run: |
           mkdir build-src
           unzip -q NOVA_OS_Android_Project_v1.zip -d build-src
